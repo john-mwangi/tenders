@@ -90,6 +90,9 @@ def post_processing(data: pd.DataFrame):
 if __name__ == "__main__":
     from argparse import ArgumentParser
 
+    BASE_URL = "https://www.tenderyetu.com"
+    SEARCH_QUERY = "system"
+
     parser = ArgumentParser()
 
     parser.add_argument(
@@ -105,17 +108,14 @@ if __name__ == "__main__":
 
     validate = input("Do you want to continue?[y/n]")
 
-    if validate != "y":
+    if validate.lower() != "y":
         print("Exiting...")
         exit(0)
 
     num_tenders = args.num_tenders
 
-    base_url = "https://www.tenderyetu.com"
-    search_query = "system"
-
     tenders_data = scrape_tenders(
-        base_url=base_url, search_query=search_query, num_tenders=num_tenders
+        base_url=BASE_URL, search_query=SEARCH_QUERY, num_tenders=num_tenders
     )
 
     csv_file_path = "tenders_data.csv"
