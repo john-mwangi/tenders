@@ -80,10 +80,10 @@ def post_processing(data: pd.DataFrame):
         year=lambda df: df.Date.str.extract(".*(\d{4})$"),
         Date=lambda df: pd.to_datetime(
             df.day + df.month + df.year, format="mixed", dayfirst=True
-        ).drop(columns=["day", "month", "year"]),
+        ),
     )
 
-    return data
+    return data.drop(columns=["day", "month", "year"])
 
 
 if __name__ == "__main__":
@@ -91,7 +91,7 @@ if __name__ == "__main__":
 
     BASE_URL = "https://www.tenderyetu.com"
     SEARCH_QUERY = "system"
-    ts = datetime.now()
+    ts = int(datetime.now().timestamp())
 
     parser = ArgumentParser()
 
