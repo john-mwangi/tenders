@@ -126,6 +126,6 @@ if __name__ == "__main__":
     # clean the dataset
     tenders = pd.read_csv(csv_file_path)
     cleaned = post_processing(tenders)
-    cleaned_file_path = f"cleaned_data_{ts}"
-    cleaned.to_csv(cleaned_file_path, index=False)
+    cleaned_file_path = f"cleaned_data_{ts}.xlsx"
+    cleaned.to_excel(cleaned_file_path, index=False)
     print("Done!!")
