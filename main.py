@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 import pandas as pd
 import requests
@@ -39,9 +40,7 @@ def scrape_tenders(base_url: str, search_query: str, num_tenders: int):
                 .strip()
             )
 
-            date_pattern = (
-                r"Closing Date:\s+(\d{1,2}(?:st|nd|rd|th)\s+[A-Za-z]+\s+\d{4})"
-            )
+            date_pattern = r"Closing Date:\s+(\d{1,2}(?:st|nd|rd|th)\s+[A-Za-z,?]+\s+\d{4})"
 
             match = re.search(date_pattern, article.text)
 
@@ -77,7 +76,7 @@ def post_processing(data: pd.DataFrame):
     data = data.assign(
         Sector=lambda df: df.Sector.str.title().replace("Public", "Govt"),
         day=lambda df: df.Date.str.extract("(\d{1,2}).*"),
-        month=lambda df: df.Date.str.extract("\w+\s+(\w+)\s+.*"),
+        month=lambda df: df.Date.str.extract("\w+\s+([A-Za-z]+),?\s+.*"),
         year=lambda df: df.Date.str.extract(".*(\d{4})$"),
         Date=lambda df: pd.to_datetime(
             df.day + df.month + df.year, format="mixed", dayfirst=True
@@ -92,6 +91,7 @@ if __name__ == "__main__":
 
     BASE_URL = "https://www.tenderyetu.com"
     SEARCH_QUERY = "system"
+    ts = datetime.now()
 
     parser = ArgumentParser()
 
@@ -118,13 +118,14 @@ if __name__ == "__main__":
         base_url=BASE_URL, search_query=SEARCH_QUERY, num_tenders=num_tenders
     )
 
-    csv_file_path = "tenders_data.csv"
+    csv_file_path = f"tenders_data_{ts}.csv"
     df = pd.DataFrame(tenders_data)
     df.to_csv(csv_file_path, index=False)
     print(f"Data saved to {csv_file_path}")
 
     # clean the dataset
-    tenders = pd.read_csv("./tenders_data.csv")
+    tenders = pd.read_csv(csv_file_path)
     cleaned = post_processing(tenders)
-    cleaned.to_csv("cleaned_data.csv", index=False)
-    print("Dataset cleaned")
+    cleaned_file_path = f"cleaned_data_{ts}"
+    cleaned.to_csv(cleaned_file_path, index=False)
+    print("Done!!")
