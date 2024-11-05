@@ -118,11 +118,8 @@ if __name__ == "__main__":
         print("Exiting...")
         exit(0)
 
-    num_tenders = args.n
-    search_query = args.search_query
-
     tenders_data = scrape_tenders(
-        base_url=BASE_URL, search_query=search_query, num_tenders=num_tenders
+        base_url=BASE_URL, search_query=args.q, num_tenders=args.n
     )
 
     csv_file_path = f"tenders_data_{ts}.csv"
